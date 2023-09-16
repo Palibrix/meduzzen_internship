@@ -1,15 +1,10 @@
-import os
 import uvicorn
 
-from dotenv import load_dotenv
 from fastapi import FastAPI
 
+from app.core.config import HOST, PORT, RELOAD
 from app.routes import health_check
 
-load_dotenv()
-HOST = os.environ.get("HOST")
-PORT = int(os.environ.get("PORT"))
-RELOAD = bool(os.environ.get("RELOAD"))
 app = FastAPI()
 
 app.include_router(health_check.router)
