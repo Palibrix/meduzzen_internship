@@ -10,3 +10,10 @@ uvicorn app.main:app
 ``
 pytest
 ``
+## To start app with Docker, run this in terminal:
+``
+docker-compose up --build -d
+``
+
+***Note:***
+*Tests will run automatically with every start with "command" parameter in **docker-compose.yml***

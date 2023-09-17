@@ -3,6 +3,10 @@ version: '3.8'
 services:
   web:
     build: .
-    command: uvicorn app.main:app
+    env_file:
+      - .env
+    command: sh -c "pytest && uvicorn app.main:app --reload --host ${HOST} --port ${PORT}"
+    ports:
+      - "8000:8000"
     volumes:
       - .:/task
