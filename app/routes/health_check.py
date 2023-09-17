@@ -1,12 +1,12 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter
+from fastapi.responses import Response
 
 router = APIRouter()
 
 
 @router.get('/')
 def index():
-	return {
-		"status_code": status.HTTP_200_OK,
-		"detail": "ok",
-		"result": "working"
-	}
+	return Response(
+		content='{"status_code": 200, "detail": "ok", "result": "working"}',
+		media_type='application/json'
+	)
