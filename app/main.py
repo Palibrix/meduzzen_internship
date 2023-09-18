@@ -2,11 +2,11 @@ import uvicorn
 
 from fastapi import FastAPI
 
-from app.core.config import Settings
+from app.core.config import ServerSettings
 from app.routes import health_check
 
 app = FastAPI()
-settings = Settings()
+settings = ServerSettings()
 
 app.include_router(health_check.router)
 
