@@ -1,9 +1,12 @@
 import os
 
 from dotenv import load_dotenv
+from pydantic.v1 import BaseSettings
 
-load_dotenv()\
+load_dotenv()
 
-HOST = os.environ.get("HOST")
-PORT = int(os.environ.get("PORT"))
-RELOAD = bool(os.environ.get("RELOAD"))
+
+class Settings(BaseSettings):
+	host = os.environ.get("HOST")
+	port = int(os.environ.get("WEB_PORT"))
+	reload = bool(os.environ.get("RELOAD"))
