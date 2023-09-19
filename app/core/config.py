@@ -1,12 +1,9 @@
-import os
-
-from dotenv import load_dotenv
-from pydantic.v1 import BaseSettings
-
-load_dotenv()
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-class Settings(BaseSettings):
-	host = os.environ.get("HOST")
-	port = int(os.environ.get("WEB_PORT"))
-	reload = bool(os.environ.get("RELOAD"))
+class ServerSettings(BaseSettings):
+    host: str
+    port: int
+    reload: bool
+
+    model_config = SettingsConfigDict(env_file=".env")
