@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from redis import asyncio as aioredis
 from sqlalchemy import text
 from sqlalchemy.exc import OperationalError
@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import JSONResponse
 
 from app.db.database import get_session
-from app.services.redis import rd
+from app.services.redis import get_redis
 
 router = APIRouter()
 
@@ -21,7 +21,7 @@ def index():
 @router.get("/test_redis_connection")
 async def test_redis_connection():
     try:
-        await rd.ping()
+        await get_redis().ping()
         return JSONResponse(content={
             "message": "Redis connection is successful!"
                             })
@@ -39,6 +39,7 @@ async def test_db_connection(session: AsyncSession = Depends(get_session)):
             "status": "success",
             "result": result.scalar_one()
         }
-    except OperationalError:
-        raise HTTPException(status_code=500,
-                            detail="Failed to connect to the database.q")
+    except OperationalError as e:
+        return JSONResponse(content={
+            "message": f"Database connection failed: {str(e)}"
+                            })
