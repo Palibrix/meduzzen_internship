@@ -10,3 +10,23 @@ services:
       - "8000:8000"
     volumes:
       - .:/task
+
+  db:
+    image: postgres:14.9
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - "5433:5432"
+    restart: always
+    volumes:
+      - ./db-internship/:/var/lib/postgresql/vol/
+      - ./.conf/db:/docker-entrypoint-initdb.d/
+
+  redis:
+    image: redis:7.2.1
+    ports:
+      - '6379:6379'

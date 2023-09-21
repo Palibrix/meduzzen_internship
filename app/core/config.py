@@ -6,4 +6,12 @@ class ServerSettings(BaseSettings):
     port: int
     reload: bool
 
-    model_config = SettingsConfigDict(env_file=".env")
+    db_url: str
+
+    redis_port: int
+    redis_host: str
+
+    model_config = SettingsConfigDict(env_file=".env", extra='ignore')
+
+
+settings = ServerSettings()
