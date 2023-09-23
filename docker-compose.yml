@@ -1,15 +1,19 @@
-version: '3.8'
+version: '3.9'
 
 services:
   web:
     build: .
     env_file:
       - .env
-    command: sh -c "pytest && uvicorn app.main:app --reload --host ${HOST} --port ${PORT}"
+    command: sh -c "alembic upgrade head && uvicorn app.main:app --reload --host ${HOST} --port ${PORT}"
     ports:
       - "8000:8000"
     volumes:
       - .:/task
+    depends_on:
+      - db
+      - redis
+    restart: always
 
   db:
     image: postgres:14.9

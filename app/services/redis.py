@@ -10,5 +10,5 @@ pool = redis.ConnectionPool(
 )
 
 
-def get_redis():
+async def get_redis():
 	return aioredis.Redis(connection_pool=pool)
