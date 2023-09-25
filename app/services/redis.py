@@ -1,10 +1,9 @@
-import redis
 from redis import asyncio as aioredis
 
 from app.core.config import settings
 
 
-pool = redis.ConnectionPool(
+pool = aioredis.ConnectionPool(
 	host=settings.redis_host,
 	port=settings.redis_port
 )

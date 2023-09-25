@@ -22,7 +22,8 @@ def index():
 async def test_redis_connection():
     try:
         redis = await get_redis()
-        redis.ping()
+        await redis.ping()
+        await redis.close()
         return JSONResponse(content={
             "message": "Redis connection is successful!"
                             })

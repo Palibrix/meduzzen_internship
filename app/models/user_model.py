@@ -9,8 +9,8 @@ class User(Base):
 
 	user_id = Column(Integer, primary_key=True, index=True, nullable=False)
 	user_email = Column(String, unique=True, index=True, nullable=False)
-	user_firstname = Column(String)
-	user_lastname = Column(String)
+	user_firstname = Column(String, nullable=False)
+	user_lastname = Column(String, nullable=False)
 	user_city = Column(String)
 	user_phone = Column(String)
 	user_avatar = Column(String)

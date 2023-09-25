@@ -30,6 +30,7 @@ To apply migrations, you need to open same container terminal and run
 ``
 alembic upgrade head
 ``
+Use ``sudo chown -R $(whoami) .`` if you have problems with docker-created files ownership
 
 ***Note:***
 *To run tests, you need to start Docker Compose with **docker-compose-test.yml** file:*

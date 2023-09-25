@@ -6,9 +6,9 @@ class UserBase(BaseModel):
 	user_email: str
 	user_firstname: str
 	user_lastname: str
-	user_city: str
-	user_phone: str
-	user_avatar: str
+	user_city: Optional[str]
+	user_phone: Optional[str]
+	user_avatar: Optional[str]
 
 
 class User(UserBase):
