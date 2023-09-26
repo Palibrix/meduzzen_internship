@@ -21,7 +21,9 @@ def index():
 @router.get("/test_redis_connection")
 async def test_redis_connection():
     try:
-        await get_redis().ping()
+        redis = await get_redis()
+        await redis.ping()
+        await redis.close()
         return JSONResponse(content={
             "message": "Redis connection is successful!"
                             })

@@ -15,5 +15,25 @@ pytest
 docker-compose up --build -d
 ``
 
+## Creating migrations
+To create migrations, you need to open container terminal
+``
+docker-compose exec web sh
+``
+and run 
+``
+alembic revision --autogenerate -m "Comment"
+``
+
+## Applying migrations
+To apply migrations, you need to open same container terminal and run 
+``
+alembic upgrade head
+``
+Use ``sudo chown -R $(whoami) .`` if you have problems with docker-created files ownership
+
 ***Note:***
-*Tests will run automatically with every start with "command" parameter in **docker-compose.yml***
+*To run tests, you need to start Docker Compose with **docker-compose-test.yml** file:*
+``
+docker-compose -f docker-compose-test.yml up --build
+``
