@@ -215,7 +215,7 @@ cython_debug/
 /.idea/
 
 # Enviroment variables
-/.env
+/.env*
 
 # Database for tests
 /tests.db
