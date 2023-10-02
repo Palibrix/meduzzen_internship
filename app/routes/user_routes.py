@@ -1,12 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordBearer
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.schemas import user_schema as schemas
-from app.models import user_model as model
-
 from app.db.database import get_session
+from app.schemas import user_schema as schemas
 from app.services.user_service import UserService
 
 router = APIRouter()
