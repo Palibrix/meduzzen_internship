@@ -21,17 +21,21 @@ class UserService:
 	def __init__(self, db: AsyncSession):
 		self.db = db
 
-	async def get_all_users(self, skip: int, limit: int):
-		result = await self.db.execute(select(model.User).offset(skip).limit(limit))
-		return result.scalars().all()
-
-	async def get_one_user(self, user_id: int = None, email: str = None):
+	async def get_one_user_result(self, user_id: int = None, email: str = None):
 		if not user_id and not email:
 			raise ValueError("Either 'id' or 'email' must be provided")
 		email = email.lower() if email else None
 		stmt = select(model.User).where(or_(model.User.user_id == user_id, model.User.user_email == email))
 		result = await self.db.execute(stmt)
-		user = result.scalars().first()
+		return result.scalars().first()
+
+	async def get_all_users(self, skip: int, limit: int):
+		result = await self.db.execute(select(model.User).offset(skip).limit(limit))
+		return result.scalars().all()
+
+	async def get_one_user(self, user_id: int = None, email: str = None):
+
+		user = await self.get_one_user_result(user_id=user_id, email=email)
 
 		if user is None:
 			raise UserNotFound
@@ -40,12 +44,8 @@ class UserService:
 
 	async def create_user(self, user: schemas.SignUpRequest):
 
-		try:
-			await self.get_one_user(email=user.user_email)
-		except HTTPException as e:
-			if e.status_code == status.HTTP_404_NOT_FOUND:
-				...
-		else:
+		db_user = await self.get_one_user_result(email=user.user_email)
+		if db_user:
 			raise UserExist
 
 		normalized_email = self.normalize_email(user.user_email)
