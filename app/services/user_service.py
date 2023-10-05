@@ -104,17 +104,15 @@ class UserService:
 			if email is None or "@" not in email:
 				raise CredentialsException
 			token_data = token_schema.TokenData(email=email)
-		except JWTError as e:
+		except JWTError:
 			raise CredentialsException
-		try:
-			user = await self.get_one_user(email=token_data.email)
-		except HTTPException as e:
-			if e.status_code == status.HTTP_404_NOT_FOUND:
-				firstname = payload.get("firstname")
-				lastname = payload.get("lastname")
-				if not firstname and not lastname:
-					raise CredentialsException
-				user = await self.create_user_by_email(email=email, firstname=firstname, lastname=lastname)
+		user = await self.get_one_user_result(email=token_data.email)
+		if not user:
+			firstname = payload.get("firstname")
+			lastname = payload.get("lastname")
+			if not firstname and not lastname:
+				raise CredentialsException
+			user = await self.create_user_by_email(email=email, firstname=firstname, lastname=lastname)
 		if not user.is_active:
 			raise InactiveUser
 		return user
