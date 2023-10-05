@@ -42,3 +42,7 @@ class UsersListResponse(BaseModel):
 
 class UserDetailResponse(User):
     pass
+
+
+class UserAuth0CreateRequest(BaseModel):
+    user_email: str
