@@ -6,6 +6,25 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.test
-    command: pytest
+    env_file:
+      - .env.test
+    command: sh -c "pytest"
     volumes:
       - .:/task
+    depends_on:
+      - test_db
+
+  test_db:
+    image: postgres:14.9
+    env_file:
+      - .env.test
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - "5433:5432"
+    restart: always
+    volumes:
+      - ./db-internship-test/:/var/lib/postgresql/vol/
+      - ./.conf/db:/docker-entrypoint-initdb.d/

@@ -4,11 +4,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
-from app.routes import health_check
+from app.routes import health_check, user_routes
 
 app = FastAPI()
 
 app.include_router(health_check.router)
+app.include_router(user_routes.router)
 
 origins = [
     "http://localhost.tiangolo.com",
