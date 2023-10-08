@@ -22,8 +22,7 @@ async def login_for_access_token(
     user = await service.authenticate_user(form_data.username, form_data.password)
     if not user:
         raise WrongPasswordOrEmail
-    access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
     access_token = service.create_access_token(
-        data={"sub": user.user_email}, expires_delta=access_token_expires
+        data={"sub": user.user_email}, expires_delta=timedelta(minutes=settings.access_token_expire_minutes)
     )
     return {"access_token": access_token, "token_type": "bearer"}
