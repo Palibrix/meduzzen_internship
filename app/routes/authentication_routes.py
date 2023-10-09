@@ -1,14 +1,13 @@
-from datetime import timedelta
-
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
-from app.core.exceptions import WrongPasswordOrEmail
 from app.db.database import get_session
 from app.schemas.token_schema import Token
+from app.schemas import user_schema as schemas
 from app.services.authentication_service import AuthenticationService
+from app.services.user_service import UserService
 
 router = APIRouter()
 
@@ -19,10 +18,15 @@ async def login_for_access_token(
         db: AsyncSession = Depends(get_session)
 ):
     service = AuthenticationService(db)
-    user = await service.authenticate_user(form_data.username, form_data.password)
-    if not user:
-        raise WrongPasswordOrEmail
-    access_token = service.create_access_token(
-        data={"sub": user.user_email}, expires_delta=timedelta(minutes=settings.access_token_expire_minutes)
-    )
+    access_token = await service.authenticate_user(form_data.username, form_data.password)
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+@router.get("/me", response_model=schemas.User)
+async def read_users_me(
+        token: str = Depends(settings.oauth2_scheme),
+        db: AsyncSession = Depends(get_session)
+):
+    service = UserService(db)
+    current_user = await service.get_current_user(token)
+    return current_user
