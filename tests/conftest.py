@@ -27,7 +27,7 @@ async def test_client():
 async def create_test_database():
     test_user_data = {
         "user_email": "test@test.com",
-        "hashed_password": "testpassword",
+        "hashed_password": "$2b$05$N9H7SJ72n0QZXSbwsduiIuHvFybPbapD9tM1o1vkqKSbg5VokRD4S",
         "user_firstname": "Test",
         "user_lastname": "User",
         "user_city": "User",

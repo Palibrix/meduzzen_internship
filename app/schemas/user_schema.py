@@ -29,11 +29,12 @@ class SignUpRequest(UserBase):
 class UserUpdateRequest(BaseModel):
     user_firstname: Optional[str] = None
     user_lastname: Optional[str] = None
-    user_city: Optional[str] = None
-    user_phone: Optional[str] = None
-    user_avatar: Optional[str] = None
-    is_active: Optional[bool] = True
-    is_superuser: Optional[bool] = False
+    hashed_password: Optional[str] = None
+
+
+class UserUpdateResponse(BaseModel):
+    user_firstname: Optional[str] = None
+    user_lastname: Optional[str] = None
 
 
 class UsersListResponse(BaseModel):
