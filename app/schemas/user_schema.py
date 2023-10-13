@@ -1,5 +1,5 @@
 import phonenumbers
-from pydantic import BaseModel, EmailStr, constr, field_validator
+from pydantic import BaseModel, EmailStr, constr, field_validator, AnyUrl
 from typing import List, Optional
 
 
@@ -9,7 +9,7 @@ class UserBase(BaseModel):
     user_lastname: constr(min_length=1, max_length=100)
     user_city: Optional[constr(min_length=1, max_length=100)]
     user_phone: Optional[str]
-    user_avatar: Optional[str]
+    user_avatar: Optional[AnyUrl]
 
     @field_validator('user_phone')
     def validate_phone(cls, field):
