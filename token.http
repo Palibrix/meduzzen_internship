@@ -1,0 +1,20 @@
+### Get user
+GET http://0.0.0.0:8000/me/
+Accept: application/json
+Authorization: Bearer {{access-token}}
+
+
+### Create auth0 user
+POST https://{{domain}}/dbconnections/signup
+Content-Type: application/json
+
+{
+  "client_id": "{{client_id}}",
+  "email": "test_test2@test.com",
+  "password": "test_PASSWORD123",
+  "connection": "{{connection}}",
+  "user_metadata": {
+    "firstname": "John",
+    "lastname": "Doe"
+  }
+}
