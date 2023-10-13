@@ -1,14 +1,23 @@
-from pydantic import BaseModel
+import phonenumbers
+from pydantic import BaseModel, EmailStr, constr, field_validator
 from typing import List, Optional
 
 
 class UserBase(BaseModel):
-    user_email: str
-    user_firstname: str
-    user_lastname: str
-    user_city: Optional[str]
+    user_email: EmailStr
+    user_firstname: constr(min_length=1, max_length=100)
+    user_lastname: constr(min_length=1, max_length=100)
+    user_city: Optional[constr(min_length=1, max_length=100)]
     user_phone: Optional[str]
     user_avatar: Optional[str]
+
+    @field_validator('user_phone')
+    def validate_phone(cls, field):
+        if field is not None:
+            field = phonenumbers.parse(field)
+            if not phonenumbers.is_valid_number(field):
+                raise ValueError('Invalid phone number')
+        return field
 
 
 class User(UserBase):
@@ -18,7 +27,7 @@ class User(UserBase):
 
 
 class SignInRequest(BaseModel):
-    user_email: str
+    user_email: EmailStr
     hashed_password: str
 
 
@@ -27,8 +36,8 @@ class SignUpRequest(UserBase):
 
 
 class UserUpdateRequest(BaseModel):
-    user_firstname: Optional[str] = None
-    user_lastname: Optional[str] = None
+    user_firstname: Optional[constr(min_length=1, max_length=100)] = None
+    user_lastname: Optional[constr(min_length=1, max_length=100)] = None
     hashed_password: Optional[str] = None
 
 
@@ -46,4 +55,4 @@ class UserDetailResponse(User):
 
 
 class UserAuth0CreateRequest(BaseModel):
-    user_email: str
+    user_email: EmailStr

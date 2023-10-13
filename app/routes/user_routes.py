@@ -25,16 +25,6 @@ async def get_user(user_id: int, db: AsyncSession = Depends(get_session)):
     return await service.get_one_user(user_id=user_id)
 
 
-@router.get("/me", response_model=schemas.User)
-async def read_users_me(
-        token: str = Depends(settings.oauth2_scheme),
-        db: AsyncSession = Depends(get_session)
-):
-    service = UserService(db)
-    current_user = await service.get_current_user(token)
-    return current_user
-
-
 @router.post("/sign-up/", response_model=schemas.SignUpRequest)
 async def create_user(
         user: schemas.SignUpRequest,
@@ -61,5 +51,4 @@ async def delete_user(user_id: int,
                       db: AsyncSession = Depends(get_session),
                       token: str = Depends(settings.oauth2_scheme)):
     service = UserService(db)
-    await IsCurrentUser(db=db, token=token, user_id=user_id).__call__()
     return await service.delete_user(user_id=user_id)

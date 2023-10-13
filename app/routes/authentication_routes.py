@@ -28,5 +28,4 @@ async def read_users_me(
         db: AsyncSession = Depends(get_session)
 ):
     service = UserService(db)
-    current_user = await service.get_current_user(token)
-    return current_user
+    return await service.get_current_user(token)

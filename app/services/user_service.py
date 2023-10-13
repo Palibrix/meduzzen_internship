@@ -44,13 +44,9 @@ class UserService:
 		if db_user:
 			raise UserExist
 
-		normalized_email = self.normalize_email(user.user_email)
-		hashed_password = self.get_password_hash(user.hashed_password)
-
 		user_dict = user.model_dump()
-
-		user_dict["user_email"] = normalized_email
-		user_dict["hashed_password"] = hashed_password
+		user_dict["user_email"] = self.normalize_email(user.user_email)
+		user_dict["hashed_password"] = self.get_password_hash(user.hashed_password)
 
 		new_user = model.User(**user_dict)
 		self.db.add(new_user)
@@ -65,11 +61,8 @@ class UserService:
 		new_user = model.User(user_email=email, user_firstname=firstname, user_lastname=lastname,
 							hashed_password=password)
 
-		normalized_email = self.normalize_email(new_user.user_email)
-		hashed_password = self.get_password_hash(new_user.hashed_password)
-
-		new_user.user_email = normalized_email
-		new_user.hashed_password = hashed_password
+		new_user.user_email = self.normalize_email(new_user.user_email)
+		new_user.hashed_password = self.get_password_hash(new_user.hashed_password)
 
 		self.db.add(new_user)
 		await self.db.commit()
