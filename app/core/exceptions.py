@@ -9,8 +9,16 @@ class UserExist(HTTPException):
 		)
 
 
-class UserNotFound(HTTPException):
-	def __init__(self, detail="User not found"):
+class CompanyExist(HTTPException):
+	def __init__(self, detail="Company with this name already exist"):
+		super().__init__(
+			status_code=404,
+			detail=detail
+		)
+
+
+class ObjectNotFound(HTTPException):
+	def __init__(self, detail="Object not found"):
 		super().__init__(
 			status_code=404,
 			detail=detail

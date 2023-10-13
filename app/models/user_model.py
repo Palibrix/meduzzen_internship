@@ -1,4 +1,5 @@
 from sqlalchemy import Boolean, Column, Integer, String, DateTime, func
+from sqlalchemy.orm import relationship
 
 from app.db.database import Base
 
@@ -21,3 +22,5 @@ class User(Base):
 
 	created_at = Column(DateTime(timezone=True), server_default=func.now())
 	updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+	children = relationship("Company", backref='parent', passive_deletes=True)

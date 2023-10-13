@@ -1,19 +1,15 @@
 import secrets
 import string
-from typing import Annotated
 
-from fastapi import HTTPException, status, Depends
 from jose import JWTError, jwt
 from sqlalchemy import select, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from passlib.context import CryptContext
-
 from app.core.config import settings
-from app.core.exceptions import UserNotFound, UserExist, CredentialsException, InactiveUser
+from app.core.exceptions import ObjectNotFound, UserExist, CredentialsException, InactiveUser
 from app.models import user_model as model
-from app.schemas import user_schema as schemas
 from app.schemas import token_schema
+from app.schemas import user_schema as schemas
 
 
 class UserService:
@@ -38,7 +34,7 @@ class UserService:
 		user = await self.get_one_user_result(user_id=user_id, email=email)
 
 		if user is None:
-			raise UserNotFound
+			raise ObjectNotFound
 
 		return user
 
