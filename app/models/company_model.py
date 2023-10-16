@@ -1,6 +1,14 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, func, ForeignKey
+from sqlalchemy.orm import relationship
 
 from app.db.database import Base
+
+
+class CompanyMembers(Base):
+	__tablename__ = 'company_members'
+
+	user_id = Column(Integer, ForeignKey('users.user_id'), primary_key=True)
+	company_id = Column(Integer, ForeignKey('companies.company_id'), primary_key=True)
 
 
 class Company(Base):
@@ -15,6 +23,8 @@ class Company(Base):
 	company_phone = Column(String)
 	company_links = Column(String)
 	company_avatar = Column(String)
+
+	company_members = relationship("User", secondary=CompanyMembers.__table__, backref="companies")
 
 	is_visible = Column(Boolean(), nullable=False, default=True)
 
