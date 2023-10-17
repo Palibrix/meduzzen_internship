@@ -33,7 +33,7 @@ async def test_create_user(test_client):
         "user_firstname": "Test",
         "user_lastname": "User",
         "user_city": "User",
-        "user_phone": "User",
+        "user_phone": "+44 7911 123456",
         "user_avatar": "User",
     })
     assert response.status_code == 200
@@ -78,7 +78,7 @@ async def test_update_user(test_client):
 @pytest.mark.asyncio
 async def test_delete_wrong_user(test_client):
     token = await test_login(test_client)
-    response = await test_client.delete("/users/3", headers={"Authorization": f"Bearer {token}"},)
+    response = await test_client.delete("/users/2", headers={"Authorization": f"Bearer {token}"},)
     assert response.status_code == 403
 
 

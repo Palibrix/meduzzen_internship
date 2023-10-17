@@ -32,7 +32,7 @@ async def create_test_database():
         "user_firstname": "Test",
         "user_lastname": "User",
         "user_city": "User",
-        "user_phone": "User",
+        "user_phone": "+44 7911 123456",
         "user_avatar": "User",
     }
 
@@ -42,7 +42,7 @@ async def create_test_database():
         "user_firstname": "Test",
         "user_lastname": "User",
         "user_city": "User",
-        "user_phone": "User",
+        "user_phone": "+44 7911 123456",
         "user_avatar": "User",
     }
 
@@ -52,7 +52,7 @@ async def create_test_database():
         "company_title": "string",
         "company_description": "string",
         "company_city": "string",
-        "company_phone": "string",
+        "company_phone": "+44 7911 123456",
         "company_links": "string",
         "company_avatar": "string"
     }
