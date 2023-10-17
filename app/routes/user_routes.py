@@ -51,4 +51,5 @@ async def delete_user(user_id: int,
                       db: AsyncSession = Depends(get_session),
                       token: str = Depends(settings.oauth2_scheme)):
     service = UserService(db)
+    await IsCurrentUser(db=db, token=token, user_id=user_id).__call__()
     return await service.delete_user(user_id=user_id)
