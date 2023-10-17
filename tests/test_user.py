@@ -23,7 +23,7 @@ async def test_create_user(test_client):
         "user_firstname": "Test",
         "user_lastname": "User",
         "user_city": "User",
-        "user_phone": "User",
+        "user_phone": "+44 7911 123456",
         "user_avatar": "User",
     })
     assert response.status_code == 200

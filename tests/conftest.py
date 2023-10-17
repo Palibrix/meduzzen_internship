@@ -31,7 +31,7 @@ async def create_test_database():
         "user_firstname": "Test",
         "user_lastname": "User",
         "user_city": "User",
-        "user_phone": "User",
+        "user_phone": "+44 7911 123456",
         "user_avatar": "User",
     }
 
