@@ -15,7 +15,7 @@ class AuthenticationService:
 		user_service = UserService(self.db)
 		user = await user_service.get_one_user(email=email)
 		if not user_service.verify_password(password, user.hashed_password):
-			return False
+			raise WrongPasswordOrEmail
 		access_token = self.create_access_token(
 			data={"sub": user.user_email}, expires_delta=timedelta(minutes=settings.access_token_expire_minutes)
 		)

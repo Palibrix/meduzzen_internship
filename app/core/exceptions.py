@@ -17,6 +17,14 @@ class UserNotFound(HTTPException):
 		)
 
 
+class WrongUser(HTTPException):
+	def __init__(self, detail="Forbidden"):
+		super().__init__(
+			status_code=403,
+			detail=detail
+		)
+
+
 class CredentialsException(HTTPException):
 	def __init__(self, detail="Could not validate credentials"):
 		super().__init__(
