@@ -4,7 +4,7 @@ from typing import List
 from pydantic import BaseModel, Field
 
 
-class ActionType(Enum):
+class ActionType(str, Enum):
     request = "request"
     invite = "invite"
 

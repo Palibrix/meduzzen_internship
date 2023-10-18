@@ -47,5 +47,5 @@ class IsInvited:
 	async def __call__(self):
 		action = await self.action_service.get_one_action(action_id=self.invitation_id)
 		current_user: User = await self.user_service.get_current_user(token=self.token)
-		if not action.user_id == current_user.user_id:
+		if action.user_id != current_user.user_id:
 			raise WrongUser

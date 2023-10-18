@@ -1,9 +1,9 @@
 from sqlalchemy import select, and_, or_
 
-from app.core.exceptions import ActionExist, ObjectNotFound
+from app.core.exceptions import ActionExist, ObjectNotFound, MemberExist
 from app.models.action_model import Action
 from app.models.company_model import CompanyMembers
-from app.services.company_services import CompanyService
+from app.schemas import action_schema as schemas
 from app.services.user_service import UserService
 
 
@@ -14,7 +14,7 @@ class ActionService:
 
 	async def get_one_action_result(self, company_id: int, user_id: int, action: str, action_id: int = 0):
 
-		if action not in ('invite', 'request', None):
+		if action not in (schemas.ActionType.request, schemas.ActionType.invite, None):
 			raise ValueError('Wrong action')
 
 		stmt = select(Action).where(
@@ -48,7 +48,7 @@ class ActionService:
 
 	async def create_action(self, company_id, action, user_id=None, token=None):
 
-		if action == 'request':
+		if action == schemas.ActionType.request:
 			user_service = UserService(self.db)
 			active_user = await user_service.get_current_user(token=token)
 			user_id = active_user.user_id
@@ -57,10 +57,20 @@ class ActionService:
 		if db_action:
 			raise ActionExist
 
-		new_company = Action(company_id=company_id, user_id=user_id, action=action)
-		self.db.add(new_company)
+		stmt = select(CompanyMembers).where(
+			CompanyMembers.company_id == company_id  # type: ignore
+		)
+		result = await self.db.execute(stmt)
+
+		db_company_member = result.scalars().all() 	# THIS WILL BE CHANGED IN PR 10
+
+		if db_company_member is not None:
+			raise MemberExist
+
+		new_action = Action(company_id=company_id, user_id=user_id, action=action)
+		self.db.add(new_action)
 		await self.db.commit()
-		await self.db.refresh(new_company)
+		await self.db.refresh(new_action)
 
 		return {"detail": f"Action {action} created"}
 
@@ -112,7 +122,7 @@ class ActionService:
 		stmt = select(Action).where(
 			and_(
 				Action.user_id == active_user.user_id,
-				Action.action == 'request'
+				Action.action == schemas.ActionType.request
 			)
 		)
 		result = await self.db.execute(stmt)
@@ -126,7 +136,7 @@ class ActionService:
 		stmt = select(Action).where(
 			and_(
 				Action.user_id == active_user.user_id,
-				Action.action == 'invite'
+				Action.action == schemas.ActionType.invite
 			)
 		)
 		result = await self.db.execute(stmt)
@@ -137,7 +147,7 @@ class ActionService:
 		stmt = select(Action).where(
 			and_(
 				Action.company_id == company_id,
-				Action.action == 'invite'
+				Action.action == schemas.ActionType.invite
 			)
 		)
 		result = await self.db.execute(stmt)
@@ -148,7 +158,7 @@ class ActionService:
 		stmt = select(Action).where(
 			and_(
 				Action.company_id == company_id,
-				Action.action == 'request'
+				Action.action == schemas.ActionType.request
 			)
 		)
 		result = await self.db.execute(stmt)
