@@ -129,7 +129,7 @@ async def view_requests(
 		token: str = Depends(settings.oauth2_scheme)
 ):
 	service = ActionService(db)
-	return await service.view_requests(token=token)
+	return {"actions": await service.view_requests(token=token)}
 
 
 @router.get("/user/invitations", response_model=schemas.ActionListResponse)
@@ -138,7 +138,7 @@ async def view_invitations(
 		token: str = Depends(settings.oauth2_scheme)
 ):
 	service = ActionService(db)
-	return await service.view_invitations(token=token)
+	return {"actions": await service.view_invitations(token=token)}
 
 
 @router.get("/companies/{company_id}/invitations", response_model=schemas.ActionListResponse)
@@ -149,7 +149,7 @@ async def view_invited_users(
 ):
 	service = ActionService(db)
 	await IsCompanyOwner(db=db, token=token, company_id=company_id).__call__()
-	return await service.view_invited_users(company_id=company_id)
+	return {"actions": await service.view_invited_users(company_id=company_id)}
 
 
 @router.get("/companies/{company_id}/requests", response_model=schemas.ActionListResponse)
@@ -160,7 +160,7 @@ async def view_join_requests(
 ):
 	service = ActionService(db)
 	await IsCompanyOwner(db=db, token=token, company_id=company_id).__call__()
-	return await service.view_join_requests(company_id=company_id)
+	return {"actions": await service.view_join_requests(company_id=company_id)}
 
 
 @router.get("/companies/{company_id}/users")
