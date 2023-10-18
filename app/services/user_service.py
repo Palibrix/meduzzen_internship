@@ -71,11 +71,10 @@ class UserService:
 
 	async def update_user(self, user_id: int, user: schemas.UserUpdateRequest):
 		db_user = await self.get_one_user(user_id=user_id)
-		for key, value in user.model_dump().items():
-			if value is not None:
-				if key == "hashed_password":
-					value = self.get_password_hash(value)
-				setattr(db_user, key, value)
+		for key, value in user.model_dump(exclude_none=True).items():
+			if key == "hashed_password":
+				value = self.get_password_hash(value)
+			setattr(db_user, key, value)
 		await self.db.commit()
 		return db_user
 

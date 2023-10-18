@@ -15,7 +15,7 @@ class IsCurrentUser:
 
 	async def __call__(self):
 		current_user: User = await self.service.get_current_user(token=self.token)
-		if not self.user_id == current_user.user_id:
+		if self.user_id != current_user.user_id:
 			raise WrongUser
 
 
@@ -31,7 +31,7 @@ class IsCompanyOwner:
 	async def __call__(self):
 		company = await self.company_service.get_one_company(company_id=self.company_id, token=self.token)
 		current_user: User = await self.user_service.get_current_user(token=self.token)
-		if not company.company_owner_id == current_user.user_id:
+		if company.company_owner_id != current_user.user_id:
 			raise WrongUser
 
 
