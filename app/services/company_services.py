@@ -26,20 +26,14 @@ class CompanyService:
 		if not company_name and not company_id:
 			raise ValueError("Either 'id' or 'name' must be provided")
 		stmt = select(Company).where(
-			or_(
-				and_(
-					Company.company_id == company_id,
-					or_(
-						Company.is_visible,
-						Company.company_owner_id == active_user.user_id
-					)
+			and_(
+				or_(
+					Company.is_visible,
+					Company.company_owner_id == active_user.user_id,
 				),
-				and_(
+				or_(
+					Company.company_id == company_id,
 					Company.company_name == company_name,
-					or_(
-						Company.is_visible,
-						Company.company_owner_id == active_user.user_id
-					)
 				)
 			)
 		)
@@ -74,9 +68,8 @@ class CompanyService:
 
 	async def update_company(self, company_id: int, company: schemas.CompanyUpdateRequest, token):
 		db_company = await self.get_one_company(company_id=company_id, token=token)
-		for key, value in company.model_dump().items():
-			if value is not None:
-				setattr(db_company, key, value)
+		for key, value in company.model_dump(exclude_none=True).items():
+			setattr(db_company, key, value)
 		await self.db.commit()
 		return db_company
 
