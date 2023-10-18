@@ -59,14 +59,10 @@ class ActionService:
 		if db_action:
 			raise ActionExist
 
-		stmt = select(CompanyMembers).where(
-			CompanyMembers.company_id == company_id  # type: ignore
-		)
-		result = await self.db.execute(stmt)
+		member_service = CompanyMemberService(self.db)
+		db_company_member = await member_service.get_one_member(company_id=company_id, user_id=user_id)
 
-		db_company_member = result.scalars().all() 	# THIS WILL BE CHANGED IN PR 10
-
-		if db_company_member is not None:
+		if db_company_member:
 			raise MemberExist
 
 		new_action = Action(company_id=company_id, user_id=user_id, action=action)
@@ -74,7 +70,7 @@ class ActionService:
 		await self.db.commit()
 		await self.db.refresh(new_action)
 
-		return {"detail": f"Action {action} created"}
+		return new_action
 
 	async def delete_action(self, action_id):
 		db_company = await self.get_one_action(action_id=action_id)
