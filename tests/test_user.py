@@ -9,6 +9,16 @@ async def test_login(test_client):
     assert token is not None
     return token
 
+
+@pytest.mark.asyncio
+async def test_login_second(test_client):
+    response = await test_client.post("/token", data={"username": "test_two@test.com", "password": "testpassword"})
+    assert response.status_code == 200
+    token = response.json()["access_token"]
+    assert token is not None
+    return token
+
+
 @pytest.mark.asyncio
 async def test_get_users(test_client):
     response = await test_client.get("/users/")
@@ -18,7 +28,7 @@ async def test_get_users(test_client):
 @pytest.mark.asyncio
 async def test_create_user(test_client):
     response = await test_client.post("/sign-up/", json={
-        "user_email": "test_two@test.com",
+        "user_email": "test_three@test.com",
         "hashed_password": "testpassword",
         "user_firstname": "Test",
         "user_lastname": "User",
@@ -28,7 +38,7 @@ async def test_create_user(test_client):
     })
     assert response.status_code == 200
     data = response.json()
-    assert data["user_email"] == "test_two@test.com"
+    assert data["user_email"] == "test_three@test.com"
     assert data["user_firstname"] == "Test"
     assert data["user_lastname"] == "User"
 
@@ -68,7 +78,7 @@ async def test_update_user(test_client):
 @pytest.mark.asyncio
 async def test_delete_wrong_user(test_client):
     token = await test_login(test_client)
-    response = await test_client.delete("/users/2", headers={"Authorization": f"Bearer {token}"},)
+    response = await test_client.delete("/users/3", headers={"Authorization": f"Bearer {token}"},)
     assert response.status_code == 403
 
 
