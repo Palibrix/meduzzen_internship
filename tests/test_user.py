@@ -78,7 +78,7 @@ async def test_update_user(test_client):
 @pytest.mark.asyncio
 async def test_delete_wrong_user(test_client):
     token = await test_login(test_client)
-    response = await test_client.delete("/users/3", headers={"Authorization": f"Bearer {token}"},)
+    response = await test_client.delete("/users/2", headers={"Authorization": f"Bearer {token}"},)
     assert response.status_code == 403
 
 

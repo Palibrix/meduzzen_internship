@@ -17,6 +17,22 @@ class CompanyExist(HTTPException):
 		)
 
 
+class MemberExist(HTTPException):
+	def __init__(self, detail='This member already exist'):
+		super().__init__(
+			status_code=404,
+			detail=detail
+		)
+
+
+class ActionExist(HTTPException):
+	def __init__(self, detail='This action already exist'):
+		super().__init__(
+			status_code=404,
+			detail=detail
+		)
+
+
 class ObjectNotFound(HTTPException):
 	def __init__(self, detail="Object not found"):
 		super().__init__(

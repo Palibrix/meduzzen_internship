@@ -15,7 +15,8 @@ class CompanyService:
 		user_service = UserService(self.db)
 		active_user = await user_service.get_current_user(token=token)
 
-		stmt = select(Company).where(or_(Company.is_visible, Company.company_owner_id == active_user.user_id)).offset(skip).limit(limit)
+		stmt = select(Company).where(or_(Company.is_visible, Company.company_owner_id == active_user.user_id)).offset(
+			skip).limit(limit)
 		result = await self.db.execute(stmt)
 		return result.scalars().all()
 

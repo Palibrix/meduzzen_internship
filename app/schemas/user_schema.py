@@ -1,5 +1,6 @@
 import phonenumbers
-from pydantic import BaseModel, EmailStr, constr, field_validator, AnyUrl
+from phonenumbers.phonenumberutil import NumberParseException, format_number, PhoneNumberFormat
+from pydantic import BaseModel, EmailStr, constr, field_validator, AnyUrl, Field
 from typing import List, Optional
 
 
@@ -9,19 +10,25 @@ class UserBase(BaseModel):
     user_lastname: constr(min_length=1, max_length=100)
     user_city: Optional[constr(min_length=1, max_length=100)]
     user_phone: Optional[str]
-    user_avatar: Optional[AnyUrl]
+    user_avatar: Optional[str]
 
     @field_validator('user_phone')
     def validate_phone(cls, field):
         if field is not None:
-            field = phonenumbers.parse(field)
-            if not phonenumbers.is_valid_number(field):
-                raise ValueError('Invalid phone number')
+            try:
+                field = phonenumbers.parse(field)
+                if not phonenumbers.is_valid_number(field):
+                    raise ValueError('Invalid phone number')
+                field = format_number(field, PhoneNumberFormat.E164)
+            except NumberParseException as e:
+                raise ValueError(f'An error occurred while parsing the phone number: {str(e)}')
+            except Exception as e:
+                raise ValueError(f'An unexpected error occurred: {str(e)}')
         return field
 
 
 class User(UserBase):
-    user_id: int
+    user_id: int = Field(..., gt=0)
     is_active: bool
     is_superuser: bool
 
