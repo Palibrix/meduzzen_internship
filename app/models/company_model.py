@@ -10,6 +10,8 @@ class CompanyMembers(Base):
 	user_id = Column(Integer, ForeignKey('users.user_id'), primary_key=True)
 	company_id = Column(Integer, ForeignKey('companies.company_id'), primary_key=True)
 
+	is_admin = Column(Boolean(), default=False)
+
 
 class Company(Base):
 	__tablename__ = "companies"

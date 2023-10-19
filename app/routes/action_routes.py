@@ -113,6 +113,18 @@ async def exclude_user(
 	return await service.exclude_user(company_id=company_id, user_id=user_id)
 
 
+@router.put("/companies/{company_id}/users/{user_id}")
+async def change_admin(
+		company_id: int,
+		user_id: int,
+		db: AsyncSession = Depends(get_session),
+		token: str = Depends(settings.oauth2_scheme)
+):
+	service = ActionService(db)
+	await IsCompanyOwner(db=db, token=token, company_id=company_id).__call__()
+	return await service.change_admin(company_id=company_id, user_id=user_id)
+
+
 @router.delete("/companies/{company_id}/leave")
 async def leave_company(
 		company_id: int,
@@ -172,3 +184,14 @@ async def view_company_users(
 	service = ActionService(db)
 	await IsCompanyOwner(db=db, token=token, company_id=company_id).__call__()
 	return await service.view_company_users(company_id=company_id)
+
+
+@router.get("/companies/{company_id}/admins")
+async def view_company_admins(
+		company_id: int,
+		db: AsyncSession = Depends(get_session),
+		token: str = Depends(settings.oauth2_scheme)
+):
+	service = ActionService(db)
+	await IsCompanyOwner(db=db, token=token, company_id=company_id).__call__()
+	return await service.view_company_admins(company_id=company_id)

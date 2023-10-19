@@ -3,6 +3,8 @@ from sqlalchemy import select, and_, or_
 from app.core.exceptions import ActionExist, ObjectNotFound, MemberExist
 from app.models.action_model import Action
 from app.models.company_model import CompanyMembers
+from app.services.company_member_service import CompanyMemberService
+from app.services.company_services import CompanyService
 from app.schemas import action_schema as schemas
 from app.services.user_service import UserService
 
@@ -57,12 +59,8 @@ class ActionService:
 		if db_action:
 			raise ActionExist
 
-		stmt = select(CompanyMembers).where(
-			CompanyMembers.company_id == company_id  # type: ignore
-		)
-		result = await self.db.execute(stmt)
-
-		db_company_member = result.scalars().all() 	# THIS WILL BE CHANGED IN PR 10
+		member_service = CompanyMemberService(self.db)
+		db_company_member = await member_service.get_one_member(company_id=company_id, user_id=user_id)
 
 		if db_company_member:
 			raise MemberExist
@@ -92,17 +90,8 @@ class ActionService:
 		return {"detail": "Action accepted"}
 
 	async def exclude_user(self, company_id: int, user_id: int):
-		stmt = select(CompanyMembers).where(
-			and_(
-				CompanyMembers.company_id == company_id,
-				CompanyMembers.user_id == user_id
-			)
-		)
-		result = await self.db.execute(stmt)
-		member = result.scalars().first()
-
-		if member is None:
-			raise ObjectNotFound
+		member_service = CompanyMemberService(self.db)
+		member = await member_service.get_one_member(company_id=company_id, user_id=user_id)
 
 		await self.db.delete(member)
 		await self.db.commit()
@@ -166,9 +155,18 @@ class ActionService:
 		return result.scalars().all()
 
 	async def view_company_users(self, company_id: int):
-		stmt = select(CompanyMembers).where(
-			CompanyMembers.company_id == company_id 	# type: ignore
-		)
-		result = await self.db.execute(stmt)
+		member_service = CompanyMemberService(self.db)
+		return await member_service.get_all_members(company_id=company_id)
 
-		return result.scalars().all()
+	async def change_admin(self, company_id, user_id):
+		member_service = CompanyMemberService(self.db)
+		member = await member_service.get_one_member(company_id=company_id, user_id=user_id)
+
+		member.is_admin = not member.is_admin
+
+		await self.db.commit()
+		return member
+
+	async def view_company_admins(self, company_id):
+		member_service = CompanyMemberService(self.db)
+		return await member_service.get_all_admins(company_id=company_id)
