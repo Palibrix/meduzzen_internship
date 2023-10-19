@@ -13,6 +13,7 @@ from app.db import database
 from app.models import user_model
 from app.models import company_model
 from app.models import action_model
+from app.models import quiz_model
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

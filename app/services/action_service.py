@@ -60,7 +60,7 @@ class ActionService:
 			raise ActionExist
 
 		member_service = CompanyMemberService(self.db)
-		db_company_member = await member_service.get_one_member(company_id=company_id, user_id=user_id)
+		db_company_member = await member_service.get_one_member_result(company_id=company_id, user_id=user_id)
 
 		if db_company_member:
 			raise MemberExist
