@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
-from app.core.permissions import IsCompanyOwner, IsInvited
+from app.core.permissions import IsCompanyOwner, IsInvited, IsCompanyOwnerOrAdmin
 from app.db.database import get_session
 from app.schemas import action_schema as schemas
 from app.services.action_service import ActionService
@@ -160,7 +160,7 @@ async def view_invited_users(
 		token: str = Depends(settings.oauth2_scheme)
 ):
 	service = ActionService(db)
-	await IsCompanyOwner(db=db, token=token, company_id=company_id).__call__()
+	await IsCompanyOwnerOrAdmin(db=db, token=token, company_id=company_id).__call__()
 	return {"actions": await service.view_invited_users(company_id=company_id)}
 
 
@@ -171,7 +171,7 @@ async def view_join_requests(
 		token: str = Depends(settings.oauth2_scheme)
 ):
 	service = ActionService(db)
-	await IsCompanyOwner(db=db, token=token, company_id=company_id).__call__()
+	await IsCompanyOwnerOrAdmin(db=db, token=token, company_id=company_id).__call__()
 	return {"actions": await service.view_join_requests(company_id=company_id)}
 
 
@@ -182,7 +182,7 @@ async def view_company_users(
 		token: str = Depends(settings.oauth2_scheme)
 ):
 	service = ActionService(db)
-	await IsCompanyOwner(db=db, token=token, company_id=company_id).__call__()
+	await IsCompanyOwnerOrAdmin(db=db, token=token, company_id=company_id).__call__()
 	return await service.view_company_users(company_id=company_id)
 
 
@@ -193,5 +193,5 @@ async def view_company_admins(
 		token: str = Depends(settings.oauth2_scheme)
 ):
 	service = ActionService(db)
-	await IsCompanyOwner(db=db, token=token, company_id=company_id).__call__()
+	await IsCompanyOwnerOrAdmin(db=db, token=token, company_id=company_id).__call__()
 	return await service.view_company_admins(company_id=company_id)

@@ -26,7 +26,7 @@ class Company(Base):
 	company_links = Column(String)
 	company_avatar = Column(String)
 
-	company_members = relationship("User", secondary=CompanyMembers.__table__, backref="companies")
+	company_members = relationship("User", secondary=CompanyMembers.__table__, backref="companies", lazy='joined')
 
 	is_visible = Column(Boolean(), nullable=False, default=True)
 

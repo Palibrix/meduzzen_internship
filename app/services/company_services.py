@@ -1,7 +1,7 @@
-from sqlalchemy import select, or_, and_
+from sqlalchemy import select, or_, and_, exists
 
 from app.core.exceptions import ObjectNotFound, CompanyExist
-from app.models.company_model import Company
+from app.models.company_model import Company, CompanyMembers
 from app.services.user_service import UserService
 from app.schemas import company_schema as schemas
 
@@ -30,14 +30,20 @@ class CompanyService:
 			and_(
 				or_(
 					Company.is_visible,
+					CompanyMembers.is_admin,
 					Company.company_owner_id == active_user.user_id,
 				),
 				or_(
 					Company.company_id == company_id,
 					Company.company_name == company_name,
+					and_(
+						CompanyMembers.user_id == active_user.user_id,
+						CompanyMembers.company_id == company_id
+					)
 				)
 			)
 		)
+		print(company_id, active_user.user_id)
 		result = await self.db.execute(stmt)
 		return result.scalars().first()
 

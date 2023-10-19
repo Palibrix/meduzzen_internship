@@ -3,9 +3,9 @@ from sqlalchemy import select, and_, or_
 from app.core.exceptions import ActionExist, ObjectNotFound, MemberExist
 from app.models.action_model import Action
 from app.models.company_model import CompanyMembers
+from app.schemas import action_schema as schemas
 from app.services.company_member_service import CompanyMemberService
 from app.services.company_services import CompanyService
-from app.schemas import action_schema as schemas
 from app.services.user_service import UserService
 
 
@@ -60,7 +60,7 @@ class ActionService:
 			raise ActionExist
 
 		member_service = CompanyMemberService(self.db)
-		db_company_member = await member_service.get_one_member(company_id=company_id, user_id=user_id)
+		db_company_member = await member_service.get_one_member_result(company_id=company_id, user_id=user_id)
 
 		if db_company_member:
 			raise MemberExist
